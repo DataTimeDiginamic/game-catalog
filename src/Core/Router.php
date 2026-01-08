@@ -45,5 +45,6 @@ final class Router {
         }
 
 //        $response->render('not-found', [], 404);
+        $response->json(['ok' => false, 'error' => '404'], 404);
     }
 }

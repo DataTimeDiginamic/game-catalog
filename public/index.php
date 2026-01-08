@@ -16,7 +16,6 @@ $registerProjectRoutes = require __DIR__ . '/../config/projectRoutes.php';
 $config = require_once __DIR__ . '/../config/db.php';
 
 Cors::Handle();
-//echo "Hello World!";
 
 $response = new Response();
 $projectRepository = new ProjectsRepository(Database::makePdo($config['db']));
@@ -38,4 +37,14 @@ $router->dispatch($request, $response);
 //        </label>
 //    </div>
 //    <button type="submit">Ajouter Projet</button>
+//</form>
+
+//<form method="post" action="client/add">
+//    <div class="field">
+//        <label for="nom">Nom Client</label>
+//        <label>
+//            <input type="text" name="nom">
+//        </label>
+//    </div>
+//    <button type="submit">Ajouter Client</button>
 //</form>

@@ -38,4 +38,9 @@ final readonly class ProjectController {
     public function getProjects(Request $request, ProjectsRepository $projectsRepository, Response $response) : void {
         $response->json($projectsRepository->findAllProjects());
     }
+
+    public function getById(Request $request, ProjectsRepository $projectsRepository, Response $response, int $id) : void {
+//        $project = $this->projectsRepository->getProjectById($id);
+        $response->json($projectsRepository->getProjectById($id));
+    }
 }

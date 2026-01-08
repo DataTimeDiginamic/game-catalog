@@ -16,4 +16,7 @@ return function (Router $router, ProjectController $projectController, PingApiCo
     $router->get('/projet', function(Request $req, Response $res) use ($projectController, $projectsRepository) {
         $projectController->getProjects($req, $projectsRepository, $res);
     });
+    $router->getRegex('#^/projet/(\d+)$#', function(Request $req, Response $res, array $m) use($projectController, $projectsRepository) {
+        $projectController->getById($req, $projectsRepository, $res, (int)$m[1]);
+    });
 };

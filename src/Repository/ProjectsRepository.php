@@ -28,6 +28,17 @@ readonly final class ProjectsRepository {
         return $sql->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function searchProjectsByName(string $name) : array {
+        $sql = $this->pdo->prepare("SELECT * FROM Projet WHERE nom LIKE :name ORDER BY id_projet ASC");
+
+        $sql->execute([
+            'name' => '%' . $name . '%'
+        ]);
+
+        return $sql->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
     public function updateProjectName(int $id, string $newName) : bool {
         $sql = $this->pdo->prepare(" UPDATE Projet SET nom = :nom WHERE id_projet = :id ");
         $sql->execute(

@@ -48,6 +48,24 @@ final readonly class ProjectController {
         $response->json($projectsRepository->getProjectById($id));
     }
 
+    public function getByName(Request $request, Response $response, string $name) : void {
+        $name = trim($name);
+
+        if ($name === '') {
+            $response->json(['ok' => false, 'message' => 'Veuillez renseigner un nom'], 400);
+            return;
+        }
+
+        $results = $this->projectsRepository->searchProjectsByName($name);
+
+        $response->json([
+            'ok' => true,
+            'count' => count($results),
+            'results' => $results
+        ]);
+    }
+
+
     public function updateProject(Request $request, Response $response) : void {
         $id = (int) $request->post('id');
         $newName = trim($request->post('nom'));

@@ -34,4 +34,8 @@ final readonly class ProjectController {
 
         $this->projectsRepository->createProject($old);
     }
+
+    public function getProjects(Request $request, ProjectsRepository $projectsRepository, Response $response) : void {
+        $response->json($projectsRepository->findAllProjects());
+    }
 }

@@ -12,25 +12,25 @@ use Repository\ProjectsRepository;
 
 session_start();
 require __DIR__ . '/../autoload.php';
-$registerRoutes = require __DIR__ . '/../config/routes.php';
+$registerProjectRoutes = require __DIR__ . '/../config/projectRoutes.php';
 $config = require_once __DIR__ . '/../config/db.php';
 
 Cors::Handle();
 //echo "Hello World!";
 
 $response = new Response();
-$repository = new ProjectsRepository(Database::makePdo($config['db']));
+$projectRepository = new ProjectsRepository(Database::makePdo($config['db']));
 $session = new Session();
 $request = new Request();
 $router = new Router();
 
-$projectController = new ProjectController($response, $repository, $session, $request);
+$projectController = new ProjectController($response, $projectRepository, $session, $request);
 $pingApiController = new PingApiController();
 
-$registerRoutes($router, $projectController, $pingApiController);
+$registerProjectRoutes($router, $projectController, $pingApiController, $projectRepository);
 $router->dispatch($request, $response);
 
-//<form method="post" action="/add">
+//<form method="post" action="project/add">
 //    <div class="field">
 //        <label for="nom">Nom Projet</label>
 //        <label>

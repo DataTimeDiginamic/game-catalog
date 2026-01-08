@@ -1,28 +1,31 @@
 <?php
 
+use Controller\ProjectController;
 use Controller\PingApiController;
-use Controller\AbsenceController;
 use Core\Cors;
 use Core\Database;
-use Core\Request;
 use Core\Response;
+use Core\Session;
+use Core\Request;
 use Core\Router;
+use Repository\ProjectsRepository;
 
 session_start();
 require __DIR__ . '/../autoload.php';
-
+$registerRoutes = require __DIR__ . '/../config/routes.php';
 $config = require_once __DIR__ . '/../config/db.php';
 
-Cors::handle();
+Cors::Handle();
+//echo "Hello World!";
 
 $response = new Response();
+$repository = new ProjectsRepository(Database::makePdo($config['db']));
+$session = new Session();
 $request = new Request();
 $router = new Router();
-$pdo = Database::makePdo($config['db']);
 
+$projectController = new ProjectController($response, $repository, $session, $request);
 $pingApiController = new PingApiController();
-$absenceController = new AbsenceController($pdo);
 
-$registerRoutes = require __DIR__ . '/../config/routes.php';
-$registerRoutes($router, $pingApiController, $absenceController);
+$registerRoutes($router, $projectController, $pingApiController);
 $router->dispatch($request, $response);

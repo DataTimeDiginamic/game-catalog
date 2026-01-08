@@ -2,7 +2,6 @@
 
 namespace Controller;
 
-use JetBrains\PhpStorm\NoReturn;
 use Core\Response;
 use Core\Session;
 use Core\Request;
@@ -11,10 +10,10 @@ use Repository\ProjectsRepository;
 final readonly class ProjectController {
 
     public function __construct(
-        private Response $response,
-        private ProjectsRepository $projectsRepository,
-        private Session $session,
-        private Request $request
+        private Response            $response,
+        private ProjectsRepository  $projectsRepository,
+        private Session             $session,
+        private Request             $request
     ) {}
 
     public function handleAddProject() : void {

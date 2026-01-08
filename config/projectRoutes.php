@@ -16,10 +16,10 @@ return function (Router $router, ProjectController $projectController, PingApiCo
     $router->get('/api/projet', function(Request $req, Response $res) use ($projectController, $projectsRepository) {
         $projectController->getProjects($req, $projectsRepository, $res);
     });
-    $router->getRegex('#^/api/projet/(.+)$#', function(Request $req, Response $res, array $m) use ($projectController) {
+    $router->getRegex('#^/api/projet/nom/(.+)$#', function(Request $req, Response $res, array $m) use ($projectController) {
         $projectController->getByName($req, $res, (string)$m[1]);
     });
-    $router->getRegex('#^/api/projet/(\d+)$#', function(Request $req, Response $res, array $m) use($projectController, $projectsRepository) {
+    $router->getRegex('#^/api/projet/id/(\d+)$#', function(Request $req, Response $res, array $m) use($projectController, $projectsRepository) {
         $projectController->getById($req, $projectsRepository, $res, (int)$m[1]);
     });
     $router->post('/api/projet/update', [$projectController, 'updateProject']);

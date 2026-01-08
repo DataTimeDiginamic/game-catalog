@@ -4,7 +4,7 @@ namespace Repository;
 
 use PDO;
 
-readonly final class ProjectsRepository {
+final readonly class ProjectsRepository {
     public function __construct(private readonly PDO $pdo) {}
 
     public function createProject(array $data) : int {

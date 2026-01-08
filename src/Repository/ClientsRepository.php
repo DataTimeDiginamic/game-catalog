@@ -4,7 +4,7 @@ namespace Repository;
 
 use PDO;
 
-readonly final class ClientsRepository {
+final readonly class ClientsRepository {
     public function __construct(private readonly PDO $pdo) {}
 
     public function createClient(array $data) : int {

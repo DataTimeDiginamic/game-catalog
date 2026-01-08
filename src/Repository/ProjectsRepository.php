@@ -27,4 +27,31 @@ readonly final class ProjectsRepository {
         $sql->execute();
         return $sql->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function updateProjectName(int $id, string $newName) : bool {
+        $sql = $this->pdo->prepare(" UPDATE Projet SET nom = :nom WHERE id_projet = :id ");
+        $sql->execute(
+            [
+                'nom' => $newName,
+                'id' => $id
+            ]);
+
+        return $sql->rowCount() > 0;
+    }
+
+    public function deleteProject(int $id) : bool {
+        $sql = $this->pdo->prepare("DELETE FROM Projet WHERE id_projet = :id");
+        $sql->bindValue(':id', $id, PDO::PARAM_INT);
+        $sql->execute();
+
+        return $sql->rowCount() > 0;
+    }
+
+    public function deleteProjectByName(string $name) : bool {
+        $sql = $this->pdo->prepare("DELETE FROM Projet WHERE nom = :nom");
+        $sql->bindValue(':nom', $name, PDO::PARAM_STR);
+        $sql->execute();
+
+        return $sql->rowCount() > 0;
+    }
 }

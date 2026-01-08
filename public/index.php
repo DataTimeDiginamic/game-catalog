@@ -29,14 +29,20 @@ $pingApiController = new PingApiController();
 $registerProjectRoutes($router, $projectController, $pingApiController, $projectRepository);
 $router->dispatch($request, $response);
 
-//<form method="post" action="project/add">
+//<form method="post" action="api/projet/delete-nom">
+//    <div class="field">
+//        <label for="id">ID Projet</label>
+//        <label>
+//            <input type="number" name="id">
+//        </label>
+//    </div>
 //    <div class="field">
 //        <label for="nom">Nom Projet</label>
 //        <label>
 //            <input type="text" name="nom">
 //        </label>
 //    </div>
-//    <button type="submit">Ajouter Projet</button>
+//    <button type="submit">Supprimer Projet</button>
 //</form>
 
 //<form method="post" action="client/add">

@@ -12,11 +12,14 @@ return function (Router $router, ProjectController $projectController, PingApiCo
     $router->get('/api/ping', [$pingApiController, 'ping']);
 
     // Projet Routes
-    $router->post('/projet/add', [$projectController, 'handleAddProject']);
-    $router->get('/projet', function(Request $req, Response $res) use ($projectController, $projectsRepository) {
+    $router->post('/api/projet/add', [$projectController, 'handleAddProject']);
+    $router->get('/api/projet', function(Request $req, Response $res) use ($projectController, $projectsRepository) {
         $projectController->getProjects($req, $projectsRepository, $res);
     });
-    $router->getRegex('#^/projet/(\d+)$#', function(Request $req, Response $res, array $m) use($projectController, $projectsRepository) {
+    $router->getRegex('#^/api/projet/(\d+)$#', function(Request $req, Response $res, array $m) use($projectController, $projectsRepository) {
         $projectController->getById($req, $projectsRepository, $res, (int)$m[1]);
     });
+    $router->post('/api/projet/update', [$projectController, 'updateProject']);
+    $router->post('/api/projet/delete', [$projectController, 'deleteProject']);
+    $router->post('/api/projet/delete-nom', [$projectController, 'deleteProjectByName']);
 };

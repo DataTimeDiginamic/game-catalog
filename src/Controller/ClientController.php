@@ -64,7 +64,6 @@ final readonly class ClientController {
         ]);
     }
 
-
     public function updateClient(Request $request, Response $response) : void {
         $id = (int) $request->post('id');
         $newName = trim($request->post('nom'));

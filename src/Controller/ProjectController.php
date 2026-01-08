@@ -64,7 +64,6 @@ final readonly class ProjectController {
         ]);
     }
 
-
     public function updateProject(Request $request, Response $response) : void {
         $id = (int) $request->post('id');
         $newName = trim($request->post('nom'));

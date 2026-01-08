@@ -20,4 +20,5 @@ final class Request {
     public function post (string $key) : mixed {
         return $_POST[$key] ?? '';
     }
+    public function json(): array { $input = file_get_contents("php://input"); return json_decode($input, true) ?? []; }
 }

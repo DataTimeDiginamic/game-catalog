@@ -44,6 +44,6 @@ final class Router {
             }
         }
 
-        $response->render('not-found', [], 404);
+        $response->json(['error' => 'Not Found'], 404);
     }
 }

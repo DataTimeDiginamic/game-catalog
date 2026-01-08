@@ -2,20 +2,43 @@
 
 use Controller\AppController;
 use Controller\PingApiController;
+use Controller\TacheApiController;
+use Core\Router;
 use Core\Request;
 use Core\Response;
-use Core\Router;
 
-return function (Router $router, AppController $controller, PingApiController $pingApiController) {
+return function (
+    Router $router,
+    AppController $controller,
+    PingApiController $pingApiController,
+    TacheApiController $tacheApiController
+) {
+    // Page d'accueil
     $router->get('/', [$controller, 'home']);
-    $router->get('/add', [$controller, 'add']);
-    $router->get('/games', [$controller, 'games']);
-    $router->get('/random', [$controller, 'random']);
-    $router->post('/add', [$controller, 'handleAddGame']);
-    $router->getRegex('#^/games/(\d+)$#', function (Request $req, Response $res, array $m) use ($controller) {
-        $controller->gameById((int)$m[1]);
+
+    // Test API
+    $router->get('/ping', [$pingApiController, 'ping']);
+
+    // -------------------------
+    // 🚀 ROUTES API TÂCHES
+    // -------------------------
+
+    // LISTE
+    $router->get('/taches', [$tacheApiController, 'index']);
+
+    // CREATE
+    $router->post('/taches', [$tacheApiController, 'store']);
+
+    // SHOW (regex)
+    $router->getRegex('#^/taches/(\d+)$#', function (Request $req, Response $res, array $m) use ($tacheApiController) {
+        $tacheApiController->show($req, $res, (int)$m[1]);
     });
 
-    // Routes API.
-    $router->get('/api/ping', [$pingApiController, 'ping']);
+    // UPDATE (POST)
+    $router->post('/taches/update', [$tacheApiController, 'update']);
+
+    // DELETE (POST)
+    $router->post('/taches/delete', [$tacheApiController, 'delete']);
+
+
 };

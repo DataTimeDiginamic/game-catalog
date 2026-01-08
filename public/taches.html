@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>CRUD Tâches</title>
+    <style>
+        body { font-family: Arial; margin: 20px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; }
+        th { background: #f2f2f2; }
+        .btn { padding: 5px 10px; cursor: pointer; }
+        .edit { background: orange; color: white; }
+        .delete { background: red; color: white; }
+    </style>
+</head>
+<body>
+
+<h1>Gestion des Tâches</h1>
+
+<form id="tacheForm" action="/taches/update" method="post">
+    <input type="hidden" id="id_tache">
+
+    <label>Nom :</label><br>
+    <input type="text" id="Nom" required><br><br>
+
+    <label>Temps prévisionnel :</label><br>
+    <input type="number" step="0.1" id="temps_previsionnel"><br><br>
+
+    <label>Temps passé :</label><br>
+    <input type="number" step="0.1" id="temps_passe"><br><br>
+
+    <label>Début :</label><br>
+    <input type="date" id="debut"><br><br>
+
+    <label>Fin :</label><br>
+    <input type="date" id="fin"><br><br>
+
+    <label>Statut :</label><br>
+    <select id="statut">
+        <option value="a_faire">À faire</option>
+        <option value="en_cours">En cours</option>
+        <option value="termine">Terminé</option>
+    </select><br><br>
+
+    <label>ID Projet :</label><br>
+    <input type="number" id="id_projet"><br><br>
+
+    <label>ID Salarié :</label><br>
+    <input type="number" id="id_salarie"><br><br>
+
+    <button type="submit">Enregistrer</button>
+</form>
+
+<h2>Liste des tâches</h2>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Nom</th>
+        <th>Statut</th>
+        <th>Projet</th>
+        <th>Salarie</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+</table>
+
+<script>
+    const API = "http://localhost:8000";
+    // Pour AlwaysData : https://renard.alwaysdata.net
+
+    async function loadTaches() {
+        const res = await fetch(API + "/taches");
+        const data = await res.json();
+
+        const tbody = document.getElementById("tbody");
+        tbody.innerHTML = "";
+
+        data.forEach(t => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>${t.id_tache}</td>
+                    <td>${t.Nom}</td>
+                    <td>${t.statut}</td>
+                    <td>${t.id_projet}</td>
+                    <td>${t.id_salarie}</td>
+                    <td>
+                        <button class="btn edit" onclick="editTache(${t.id_tache})">Modifier</button>
+                        <button class="btn delete" onclick="deleteTache(${t.id_tache})">Supprimer</button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    document.getElementById("tacheForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const id = document.getElementById("id_tache").value;
+
+        const data = {
+            id_tache: id,
+            Nom: document.getElementById("Nom").value,
+            temps_previsionnel: document.getElementById("temps_previsionnel").value,
+            temps_passe: document.getElementById("temps_passe").value,
+            debut: document.getElementById("debut").value,
+            fin: document.getElementById("fin").value,
+            statut: document.getElementById("statut").value,
+            id_projet: document.getElementById("id_projet").value,
+            id_salarie: document.getElementById("id_salarie").value
+        };
+
+        const url = id ? "/taches/update" : "/taches";
+
+        await fetch(API + url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+
+        e.target.reset();
+        loadTaches();
+    });
+
+    async function editTache(id) {
+        const res = await fetch(API + "/taches/" + id);
+        const t = await res.json();
+
+        document.getElementById("id_tache").value = t.id_tache;
+        document.getElementById("Nom").value = t.Nom;
+        document.getElementById("temps_previsionnel").value = t.temps_previsionnel;
+        document.getElementById("temps_passe").value = t.temps_passe;
+        document.getElementById("debut").value = t.debut;
+        document.getElementById("fin").value = t.fin;
+        document.getElementById("statut").value = t.statut;
+        document.getElementById("id_projet").value = t.id_projet;
+        document.getElementById("id_salarie").value = t.id_salarie;
+    }
+
+    async function deleteTache(id) {
+        if (!confirm("Supprimer cette tâche ?")) return;
+
+        await fetch(API + "/taches/delete", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id_tache: id })
+        });
+
+        loadTaches();
+    }
+
+    loadTaches();
+</script>
+
+</body>
+</html>

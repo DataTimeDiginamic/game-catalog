@@ -29,3 +29,22 @@ $pingApiController = new PingApiController();
 
 $registerRoutes($router, $projectController, $pingApiController);
 $router->dispatch($request, $response);
+
+?>
+
+<form method="post" action="/add">
+    <div class="field">
+        <label for="id">ID Projet</label>
+        <label>
+            <input type="number" name="id">
+        </label>
+    </div>
+
+    <div class="field">
+        <label for="nom">Nom Projet</label>
+        <label>
+            <input type="text" name="nom">
+        </label>
+    </div>
+    <button type="submit">Ajouter Projet</button>
+</form>

@@ -18,16 +18,13 @@ final readonly class ProjectController {
     ) {}
 
     public function handleAddProject() : void {
-        $id = trim($this->request->post("id"));
         $nom = trim($this->request->post("nom"));
 
         $errors = [];
 
-        if($id === null) $errors['id'] = 'Veuillez renseigner un identifiant projet';
         if($nom === '') $errors['nom'] = 'Veuillez renseigner un nom de projet';
 
         $old = [
-            'id' => $id,
             'nom' => $nom
         ];
 

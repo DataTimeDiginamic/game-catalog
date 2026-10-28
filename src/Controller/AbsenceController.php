@@ -53,6 +53,12 @@ final class AbsenceController
             return;
         }
         
+        $errors = $this->validate($data);
+        if (!empty($errors)) {
+            $response->json(['success' => false, 'message' => 'Validation failed', 'errors' => $errors], 400);
+            return;
+        }
+
         $repository = new \Repository\AbsenceRepository($this->pdo);
         $success = $repository->create($data);
         
@@ -85,6 +91,12 @@ final class AbsenceController
         
         // Merge with existing data
         $updateData = array_merge($absence, $data);
+
+        $errors = $this->validate($updateData);
+        if (!empty($errors)) {
+            $response->json(['success' => false, 'message' => 'Validation failed', 'errors' => $errors], 400);
+            return;
+        }
         
         $success = $repository->update($id, $updateData);
         
@@ -112,6 +124,38 @@ final class AbsenceController
         } else {
             $response->json(['success' => false, 'message' => 'Failed to delete absence'], 500);
         }
+    }
+
+    /** Vérifie les données d'une absence : retourne la liste des erreurs (vide si tout est bon) */
+    private function validate(array $data): array
+    {
+        $errors = [];
+
+        $debut = \DateTime::createFromFormat('Y-m-d', (string)($data['debut'] ?? ''));
+        if ($debut === false || $debut->format('Y-m-d') !== $data['debut']) {
+            $errors['debut'] = 'La date de début est invalide (AAAA-MM-JJ)';
+        }
+
+        // La date de fin est facultative.
+        $fin = $data['fin'] ?? null;
+        if ($fin !== null && $fin !== '') {
+            $finDate = \DateTime::createFromFormat('Y-m-d', (string)$fin);
+            if ($finDate === false || $finDate->format('Y-m-d') !== $fin) {
+                $errors['fin'] = 'La date de fin est invalide (AAAA-MM-JJ)';
+            } elseif (!isset($errors['debut']) && $fin < $data['debut']) {
+                $errors['fin'] = 'La date de fin doit être après la date de début';
+            }
+        }
+
+        if (strlen((string)($data['motif'] ?? '')) > 50) {
+            $errors['motif'] = 'Le motif ne doit pas dépasser 50 caractères';
+        }
+
+        if ((int)($data['id_salarie'] ?? 0) <= 0) {
+            $errors['id_salarie'] = 'Le salarié est obligatoire';
+        }
+
+        return $errors;
     }
 
     public function findBySalarie(Request $request, Response $response, int $salarieId): void

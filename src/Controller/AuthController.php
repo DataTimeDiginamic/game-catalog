@@ -45,13 +45,15 @@ final readonly class AuthController {
         session_regenerate_id(true);
         $this->session->set('user_id', $utilisateur['id_utilisateur']);
         $this->session->set('user_nom', $utilisateur['nom']);
+        $this->session->set('user_role', $utilisateur['role']);
 
         $this->response->json([
             'ok' => true,
             'message' => 'Connecté',
             'user' => [
                 'id' => $utilisateur['id_utilisateur'],
-                'nom' => $utilisateur['nom']
+                'nom' => $utilisateur['nom'],
+                'role' => $utilisateur['role']
             ]
         ]);
     }
@@ -66,7 +68,8 @@ final readonly class AuthController {
     public function me() : void {
         $id = $this->session->get('user_id');
 
-        if ($id === null) {
+        // Une ancienne session sans rôle compte comme non connectée.
+        if ($id === null || $this->session->get('user_role') === null) {
             $this->response->json(['ok' => false, 'message' => 'Non connecté'], 401);
             return;
         }
@@ -75,7 +78,8 @@ final readonly class AuthController {
             'ok' => true,
             'user' => [
                 'id' => $id,
-                'nom' => $this->session->get('user_nom')
+                'nom' => $this->session->get('user_nom'),
+                'role' => $this->session->get('user_role')
             ]
         ]);
     }

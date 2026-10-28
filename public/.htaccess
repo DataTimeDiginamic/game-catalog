@@ -1,0 +1,7 @@
+# Toutes les requêtes passent par index.php (Laragon / Apache)
+RewriteEngine On
+
+# Garder l'en-tête Authorization si besoin
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [L]

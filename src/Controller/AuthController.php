@@ -18,7 +18,7 @@ final readonly class AuthController {
 
     public function login() : void {
         $email = trim($this->request->post("email"));
-        $password = $this->request->post("password");
+        $password = $this->request->post("mot_de_passe");
 
         $errors = [];
 
@@ -45,10 +45,13 @@ final readonly class AuthController {
             $this->session->set('droit', $user['droit']); // 'admin' ou 'user'
 
             $this->response->json([
-                'ok' => true, 
-                'message' => 'Connexion réussie',
-                'droit' => $user['droit']
-            ]);
+                    'ok' => true,
+                    'message' => 'Connexion réussie',
+                    'user' => [
+                        'email' => $user['email'],       // Adaptez selon le nom de la colonne en base
+                        'role' => $user['droit']     // Correspond à 'admin' ou 'user' / 'client'
+                    ]
+                ]);
         } else {
             $this->response->json([
                 'ok' => false, 

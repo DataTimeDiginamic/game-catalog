@@ -71,4 +71,20 @@ $registerAbsenceRoutes($router, $pingApiController, $absenceController);
 $registerTachesRoutes($router, $pingApiController, $tacheApiController, $tacheRepository);
 $registerSalarieRoutes($router, $salarieController);
 $registerAuthRoutes($router, $authController);
+// public/index.php
+
+// --- DEBUG ROUTEUR ---
+// echo "<pre style='background: #1e1e1e; color: #fff; padding: 15px; z-index: 99999; position: relative;'>";
+// echo "<strong>--- INFORMATIONS DE DEBUG URL ---</strong>\n";
+// var_dump([
+//     'REQUEST_URI'  => $_SERVER['REQUEST_URI'] ?? 'Inconnu',
+//     'SCRIPT_NAME'  => $_SERVER['SCRIPT_NAME'] ?? 'Inconnu',
+//     'PHP_SELF'     => $_SERVER['PHP_SELF'] ?? 'Inconnu',
+//     'REQUEST_METHOD' => $_SERVER['REQUEST_METHOD'] ?? 'Inconnu'
+// ]);
+// echo "</pre>";
+// exit; // Décommentez cet exit si vous voulez stopper l'exécution immédiatement pour lire
+// ---------------------
+
+
 $router->dispatch($request, $response);

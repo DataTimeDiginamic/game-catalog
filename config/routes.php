@@ -2,6 +2,7 @@
 
 use Controller\PingApiController;
 use Controller\TacheApiController;
+use Controller\AppController;
 use Core\Router;
 use Core\Request;
 use Core\Response;

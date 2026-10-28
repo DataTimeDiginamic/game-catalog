@@ -21,11 +21,12 @@ final readonly class ClientsRepository {
         return $sql->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getClientById(int $id) : array {
+    public function getClientById(int $id) : ?array {
         $sql = $this->pdo->prepare("SELECT * FROM Client WHERE id_client = :id");
         $sql->bindValue(':id', $id, PDO::PARAM_INT);
         $sql->execute();
-        return $sql->fetch(PDO::FETCH_ASSOC);
+        $client = $sql->fetch(PDO::FETCH_ASSOC);
+        return $client === false ? null : $client;
     }
 
     public function searchClientsByName(string $name) : array {

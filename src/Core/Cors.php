@@ -5,15 +5,14 @@ namespace Core;
 final class Cors
 {
     public static function handle () :void {
-        $allowedorigin = 'http://localhost:4200';
-        $allowedOrigin = 'http://localhost:63342';
         $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 
-        if ($origin === $allowedOrigin) {
+        // On accepte le front en local (PhpStorm, serveur de dev...), peu importe le port.
+        if ($origin === 'http://localhost' || str_starts_with($origin, 'http://localhost:')) {
             // On laisse passer la communication.
-            header("Access-Control-Allow-Origin: $allowedOrigin");
-            // Si on se servait de la session et cookies + log in.
-            // header("Access-Control-Allow-Credentials: true");
+            header("Access-Control-Allow-Origin: $origin");
+            // Nécessaire pour envoyer le cookie de session (connexion).
+            header("Access-Control-Allow-Credentials: true");
         }
 
         header("Access-Control-Allow-Headers: Content-Type, Authorization");

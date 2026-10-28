@@ -36,3 +36,7 @@ INSERT INTO Soumettre (id_projet, id_client) VALUES
 (1, 1),
 (2, 2),
 (3, 3);
+
+
+INSERT INTO Utilisateur (nom, email, mot_de_passe) VALUES
+('Admin', 'admin@datatime.local', '$2y$10$6i9csjc.9Ku1AxSdgipI9.J5OMPN.KJG/o/pS3lFJitZutkg.DxL2');

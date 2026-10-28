@@ -44,7 +44,14 @@ final readonly class ClientController {
     }
 
     public function getById(Request $request, ClientsRepository $clientsRepository, Response $response, int $id) : void {
-        $response->json($clientsRepository->getClientById($id));
+        $client = $clientsRepository->getClientById($id);
+
+        if ($client === null) {
+            $response->json(['ok' => false, 'message' => 'Client introuvable'], 404);
+            return;
+        }
+
+        $response->json($client);
     }
 
     public function getByName(Request $request, Response $response, string $name) : void {

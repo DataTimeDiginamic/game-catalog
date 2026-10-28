@@ -1,12 +1,14 @@
 <?php
 
 use Controller\AuthController;
+use Controller\UtilisateurController;
 use Controller\PingApiController;
 use Controller\ProjectController;
 use Controller\ClientController;
 use Controller\AbsenceController;
 use Controller\SalarieApiController;
 use Controller\TacheApiController;
+use Core\Auth;
 use Core\Cors;
 use Core\Database;
 use Core\Response;
@@ -28,6 +30,7 @@ $registerAbsenceRoutes = require __DIR__ . '/../config/absenceRoutes.php';
 $registerTachesRoutes = require __DIR__ . '/../config/tachesRoutes.php';
 $registerSalarieRoutes = require __DIR__ . '/../config/salarieRoutes.php';
 $registerAuthRoutes = require __DIR__ . '/../config/authRoutes.php';
+$registerUtilisateurRoutes = require __DIR__ . '/../config/utilisateurRoutes.php';
 $config = require_once __DIR__ . '/../config/db.php';
 
 Cors::Handle();
@@ -50,6 +53,8 @@ $absenceController = new AbsenceController(Database::makePdo($config['db']));
 $tacheApiController = new TacheApiController($response, $tacheRepository, $request);
 $salarieController = new SalarieApiController($response, $salarieRepository, $session, $request);
 $authController = new AuthController($response, $utilisateurRepository, $session, $request);
+$utilisateurController = new UtilisateurController($response, $utilisateurRepository, $session, $request);
+$auth = new Auth($session, $response);
 
 $registerProjectRoutes($router, $projectController, $pingApiController, $projectRepository);
 $registerClientsRoutes($router, $clientController, $pingApiController, $clientRepository);
@@ -57,4 +62,21 @@ $registerAbsenceRoutes($router, $pingApiController, $absenceController);
 $registerTachesRoutes($router, $pingApiController, $tacheApiController, $tacheRepository);
 $registerSalarieRoutes($router, $salarieController);
 $registerAuthRoutes($router, $authController);
-$router->dispatch($request, $response);
+$registerUtilisateurRoutes($router, $utilisateurController);
+
+// Il faut être connecté (et avoir le bon rôle) pour utiliser l'API.
+if (!$auth->check($request)) {
+    exit;
+}
+
+try {
+    $router->dispatch($request, $response);
+} catch (PDOException $e) {
+    // Erreur SQL : on répond en JSON (au lieu d'une page d'erreur PHP) pour que le front puisse l'afficher.
+    if ($e->getCode() === '23000') {
+        // Clé étrangère inexistante, ou donnée encore utilisée ailleurs, ou doublon.
+        $response->json(['ok' => false, 'message' => 'Donnée liée inexistante, doublon ou encore utilisée ailleurs'], 409);
+    } else {
+        $response->json(['ok' => false, 'message' => 'Erreur de base de données'], 500);
+    }
+}

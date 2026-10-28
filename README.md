@@ -1,3 +1,19 @@
+# DataTime - lancer en local avec Laragon
+
+1. Démarrer Laragon (**Démarrer tout** : Apache + MySQL).
+2. Créer la base `datatime`, puis importer `scripts/schema.sql` et `scripts/seed.sql` (phpMyAdmin ou `mysql -uroot datatime < scripts/schema.sql`).
+3. Copier `config/db.local.php` (gitignoré) avec `host 127.0.0.1`, `db datatime`, `user root`, mot de passe vide, `port 3306`.
+4. Le projet doit être dans `C:\laragon\www\datatime` (`game-catalog/` et `data-time-front/`).
+   - API : `http://localhost/datatime/game-catalog/public/api/ping` (le `.htaccess` redirige tout vers `index.php`)
+   - Front : `http://localhost/datatime/data-time-front/public/index.html`
+5. Se connecter avec le compte du seed : `admin@datatime.local` / `password` (rôle admin).
+
+Rôles : `admin` (tout + gestion des utilisateurs), `recruteur` (tout sauf utilisateurs), `salarie` (lecture + ses absences), `client` (lecture projets et tâches).
+
+Sans Apache, l'API peut aussi tourner avec `php -S localhost:8000 -t public` : dans ce cas mettre `API_BASE_URL = "http://localhost:8000"` dans `data-time-front/src/app.utils.ts`.
+
+---
+
 # PHP Framework - GameCatalog
 
 ## Docker commandes de base

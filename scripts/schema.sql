@@ -51,7 +51,7 @@ CREATE TABLE Tache(
    temps_passe DECIMAL(15,1),
    debut DATE,
    fin DATE,
-   statut ENUM('a_faire','en_cours','termine') NOT NULL,
+   statut ENUM('a_faire','en_cours','termine','annule') NOT NULL,
    id_projet INT NOT NULL,
    id_salarie INT NOT NULL,
    PRIMARY KEY(id_tache),
@@ -75,4 +75,13 @@ CREATE TABLE Soumettre(
    PRIMARY KEY(id_projet, id_client),
    FOREIGN KEY(id_projet) REFERENCES Projet(id_projet),
    FOREIGN KEY(id_client) REFERENCES Client(id_client)
+);
+
+CREATE TABLE Historique(
+   id_historique INT AUTO_INCREMENT,
+   date_action DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+   utilisateur VARCHAR(50),
+   action ENUM('creation','modification','suppression') NOT NULL,
+   entite VARCHAR(30) NOT NULL,
+   PRIMARY KEY(id_historique)
 );

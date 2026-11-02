@@ -55,6 +55,11 @@ final class Auth {
             return true;
         }
 
+        // L'historique et les salaires sont réservés à l'admin et au recruteur.
+        if (str_starts_with($path, '/api/historique') || str_starts_with($path, '/api/salaires')) {
+            return false;
+        }
+
         // Le salarié peut tout lire, et gérer ses absences.
         if ($role === 'salarie') {
             return $method === 'GET' || str_starts_with($path, '/api/absences');

@@ -120,8 +120,8 @@ final class TacheApiController
             $errors['Nom'] = 'Le nom est obligatoire (50 caractères maximum)';
         }
 
-        if (!in_array($data['statut'] ?? '', ['a_faire', 'en_cours', 'termine'], true)) {
-            $errors['statut'] = 'Statut invalide (a_faire, en_cours ou termine)';
+        if (!in_array($data['statut'] ?? '', ['a_faire', 'en_cours', 'termine', 'annule'], true)) {
+            $errors['statut'] = 'Statut invalide (a_faire, en_cours, termine ou annule)';
         }
 
         if (!is_numeric($data['temps_previsionnel'] ?? null) || $data['temps_previsionnel'] < 0) {

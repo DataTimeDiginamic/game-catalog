@@ -13,7 +13,7 @@ require_once __DIR__ . '/../Helper/Debug.php';
 final readonly class AppController
 {
 
-    public GameApiController $api;
+    //public GameApiController $api;
 
     public function __construct(
         private Response        $response,

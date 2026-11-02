@@ -16,9 +16,10 @@ final readonly class AuthController {
         private Request               $request
     ) {}
 
+    // Connexion et déconnexion : code de Bill (branche utilisateur), adapté à la table Utilisateur (nom, mot_de_passe, role).
     public function login() : void {
-        $email = trim($this->request->post('email'));
-        $motDePasse = $this->request->post('mot_de_passe');
+        $email = trim($this->request->post("email"));
+        $password = $this->request->post("mot_de_passe");
 
         $errors = [];
 
@@ -26,43 +27,51 @@ final readonly class AuthController {
             $errors['email'] = 'Veuillez renseigner un email';
         }
 
-        if ($motDePasse === '') {
-            $errors['mot_de_passe'] = 'Veuillez renseigner un mot de passe';
+        if ($password === '') {
+            $errors['password'] = 'Veuillez renseigner un mot de passe';
         }
 
         if (!empty($errors)) {
-            $this->response->json(['ok' => false, 'errors' => $errors], 400);
+            $this->response->json(['ok' => false, 'errors' => $errors, 'message' => 'Veuillez remplir tous les champs'], 400);
             return;
         }
 
-        $utilisateur = $this->utilisateurRepository->findByEmail($email);
+        // Recherche dans la table 'Utilisateur'
+        $user = $this->utilisateurRepository->findByEmail($email);
 
-        if ($utilisateur === null || !password_verify($motDePasse, $utilisateur['mot_de_passe'])) {
-            $this->response->json(['ok' => false, 'message' => 'Email ou mot de passe incorrect'], 401);
-            return;
+        if ($user && password_verify($password, $user['mot_de_passe'])) {
+            // Enregistrement des informations en session (id, nom, rôle)
+            session_regenerate_id(true);
+            $this->session->set('user_id', $user['id_utilisateur']);
+            $this->session->set('user_nom', $user['nom']);
+            $this->session->set('user_role', $user['role']);
+
+            $this->response->json([
+                'ok' => true,
+                'message' => 'Connexion réussie',
+                'user' => [
+                    'id' => $user['id_utilisateur'],
+                    'nom' => $user['nom'],
+                    'role' => $user['role']
+                ]
+            ]);
+        } else {
+            $this->response->json([
+                'ok' => false,
+                'message' => 'Identifiants incorrects'
+            ], 401);
         }
-
-        session_regenerate_id(true);
-        $this->session->set('user_id', $utilisateur['id_utilisateur']);
-        $this->session->set('user_nom', $utilisateur['nom']);
-        $this->session->set('user_role', $utilisateur['role']);
-
-        $this->response->json([
-            'ok' => true,
-            'message' => 'Connecté',
-            'user' => [
-                'id' => $utilisateur['id_utilisateur'],
-                'nom' => $utilisateur['nom'],
-                'role' => $utilisateur['role']
-            ]
-        ]);
     }
 
     public function logout() : void {
-        $_SESSION = [];
+        // Destruction de la session
+        session_unset();
         session_destroy();
 
-        $this->response->json(['ok' => true, 'message' => 'Déconnecté']);
+        $this->response->json([
+            'ok' => true,
+            'message' => 'Déconnexion réussie'
+        ]);
     }
 
     public function me() : void {

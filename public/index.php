@@ -3,6 +3,7 @@
 use Controller\AuthController;
 use Controller\UtilisateurController;
 use Controller\SuiviController;
+use Controller\EntrepriseController;
 use Controller\PingApiController;
 use Controller\ProjectController;
 use Controller\ClientController;
@@ -34,6 +35,7 @@ $registerSalarieRoutes = require __DIR__ . '/../config/salarieRoutes.php';
 $registerAuthRoutes = require __DIR__ . '/../config/authRoutes.php';
 $registerUtilisateurRoutes = require __DIR__ . '/../config/utilisateurRoutes.php';
 $registerSuiviRoutes = require __DIR__ . '/../config/suiviRoutes.php';
+$registerEntrepriseRoutes = require __DIR__ . '/../config/entrepriseRoutes.php';
 $config = require_once __DIR__ . '/../config/db.php';
 
 Cors::Handle();
@@ -59,6 +61,7 @@ $salarieController = new SalarieApiController($response, $salarieRepository, $se
 $authController = new AuthController($response, $utilisateurRepository, $session, $request);
 $utilisateurController = new UtilisateurController($response, $utilisateurRepository, $session, $request);
 $suiviController = new SuiviController($response, $historiqueRepository, Database::makePdo($config['db']));
+$entrepriseController = new EntrepriseController($response);
 $auth = new Auth($session, $response);
 
 $registerProjectRoutes($router, $projectController, $pingApiController, $projectRepository);
@@ -69,6 +72,7 @@ $registerSalarieRoutes($router, $salarieController);
 $registerAuthRoutes($router, $authController);
 $registerUtilisateurRoutes($router, $utilisateurController);
 $registerSuiviRoutes($router, $suiviController);
+$registerEntrepriseRoutes($router, $entrepriseController);
 
 // Il faut être connecté (et avoir le bon rôle) pour utiliser l'API.
 if (!$auth->check($request)) {
